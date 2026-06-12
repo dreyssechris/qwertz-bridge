@@ -1,0 +1,13 @@
+## Internal project briefing - never commit
+PROJECT-BRIEF.md
+qwertz-project.md
+
+## .NET / Visual Studio
+bin/
+obj/
+dist/
+.vs/
+*.user
+*.suo
+TestResults/
+*.binlog
