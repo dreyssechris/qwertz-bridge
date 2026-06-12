@@ -7,7 +7,7 @@ using QwertzBridge.Infrastructure;
 namespace QwertzBridge.App;
 
 /// <summary>
-/// Wires everything together: config store → engine → keyboard hook → SendInput,
+/// Wires everything together: config store, engine, keyboard hook, SendInput,
 /// and exposes control via the tray icon.
 /// </summary>
 internal sealed class TrayApplicationContext : ApplicationContext

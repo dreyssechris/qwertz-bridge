@@ -8,7 +8,7 @@ public sealed class BridgeConfig
 
     /// <summary>
     /// Builds the built-in default configuration:
-    /// AltGr + comma → "&lt;", AltGr + period → "&gt;", AltGr + slash key (German "-") → "|".
+    /// AltGr + comma = "&lt;", AltGr + period = "&gt;", AltGr + slash key = "|".
     /// </summary>
     public static BridgeConfig CreateDefault() => new()
     {

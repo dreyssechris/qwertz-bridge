@@ -14,7 +14,7 @@ body:
     id: solution
     attributes:
       label: Proposed solution
-      description: How could this work? (Optional - the problem matters most.)
+      description: How could this work? (Optional, the problem matters most.)
 
   - type: textarea
     id: alternatives
