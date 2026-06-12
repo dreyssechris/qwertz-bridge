@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Target framework upgraded from .NET 8 to .NET 10 (LTS). No user-facing
+  change, the published EXE remains self-contained
+
 ## [1.0.0] - 2026-06-12
 
 ### Added

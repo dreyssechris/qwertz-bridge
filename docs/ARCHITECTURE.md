@@ -4,21 +4,21 @@ QWERTZ-Bridge uses a deliberately small layered structure:
 
 ```
 src/
-  QwertzBridge.Core            net8.0          pure logic, no Windows dependencies
+  QwertzBridge.Core            net10.0         pure logic, no Windows dependencies
     Domain/                    KeyInput, KeyDecision, RemapRule, Profile, BridgeConfig, ScanCodes
     Engine/                    RemapEngine, ProfileResolver
     Config/                    ConfigLoader (parse + validate, never throws), ScanCodeJsonConverter
     Abstractions/              IForegroundProcessProvider, ITextOutput, IAutostartManager
     SelfTest/                  SelfTestRunner (drives the pipeline with simulated events)
 
-  QwertzBridge.Infrastructure  net8.0-windows  all Win32 and OS access
+  QwertzBridge.Infrastructure  net10.0-windows all Win32 and OS access
     LowLevelKeyboardHook       WH_KEYBOARD_LL via SetWindowsHookEx
     SendInputTextOutput        SendInput with KEYEVENTF_UNICODE
     ForegroundProcessProvider  GetForegroundWindow + process name, cached per window handle
     AutostartManager           HKCU Run key
     ConfigStore                config file next to the EXE, FileSystemWatcher hot reload
 
-  QwertzBridge.App             net8.0-windows  WinForms tray app, composition root
+  QwertzBridge.App             net10.0-windows WinForms tray app, composition root
     Program                    entry point, --selftest mode, single-instance mutex
     TrayApplicationContext     wires store, engine, hook and output; tray menu
     TrayIcons                  draws the active/paused icons at runtime

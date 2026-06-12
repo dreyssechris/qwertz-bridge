@@ -162,7 +162,7 @@ dotnet test           # run the unit tests
 ./publish.ps1         # tests + portable single-file EXE into ./dist
 ```
 
-Requires the .NET 8 SDK or newer. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for
+Requires the .NET 10 SDK or newer. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for
 the internals and [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
 
 ## License

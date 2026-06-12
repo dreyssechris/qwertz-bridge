@@ -2,7 +2,7 @@
 
 ## Project overview
 
-QWERTZ-Bridge is a portable Windows tray app (C#/.NET 8) that makes `<`, `>` and `|`
+QWERTZ-Bridge is a portable Windows tray app (C#/.NET 10) that makes `<`, `>` and `|`
 typeable on physical ANSI (US) keyboards used with the German QWERTZ layout, where the
 ISO 102 key is missing. It installs a `WH_KEYBOARD_LL` hook, matches physical keys by
 scan code and replaces configured AltGr combos with text sent via `SendInput`
@@ -26,11 +26,11 @@ release.
 
 Three layers, dependencies point inwards (details in `docs/ARCHITECTURE.md`):
 
-- `src/QwertzBridge.Core` (net8.0, no Windows deps): domain types, `RemapEngine`,
+- `src/QwertzBridge.Core` (net10.0, no Windows deps): domain types, `RemapEngine`,
   `ProfileResolver`, `ConfigLoader`, `SelfTestRunner`, interfaces for all OS access.
-- `src/QwertzBridge.Infrastructure` (net8.0-windows): keyboard hook, SendInput,
+- `src/QwertzBridge.Infrastructure` (net10.0-windows): keyboard hook, SendInput,
   foreground process lookup, registry autostart, config file store with hot reload.
-- `src/QwertzBridge.App` (net8.0-windows, WinForms): composition root, tray UI,
+- `src/QwertzBridge.App` (net10.0-windows, WinForms): composition root, tray UI,
   `--selftest` entry point.
 
 ## Key decisions, including pragmatic calls
