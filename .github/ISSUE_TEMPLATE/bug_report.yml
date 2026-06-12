@@ -1,0 +1,56 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, what happened instead?
+    validations:
+      required: true
+
+  - type: input
+    id: windows-version
+    attributes:
+      label: Windows version
+      placeholder: e.g. Windows 11 Pro 23H2 (22631.3447)
+    validations:
+      required: true
+
+  - type: input
+    id: keyboard
+    attributes:
+      label: Keyboard model & physical layout
+      placeholder: e.g. Ducky One 3 SF, ANSI (US)
+    validations:
+      required: true
+
+  - type: input
+    id: layout
+    attributes:
+      label: Windows keyboard layout
+      placeholder: e.g. German (QWERTZ)
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: QWERTZ-Bridge version
+      placeholder: e.g. v1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration (qwertzbridge.json)
+      description: Paste your config if it differs from the defaults.
+      render: json
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Affected application(s), other keyboard tools running (AutoHotkey, PowerToys, ...), antivirus software.
