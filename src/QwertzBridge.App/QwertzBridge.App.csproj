@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>QwertzBridge</AssemblyName>
+    <RootNamespace>QwertzBridge.App</RootNamespace>
+    <Version>1.0.0</Version>
+    <NoWarn>$(NoWarn);SYSLIB1054</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QwertzBridge.Core\QwertzBridge.Core.csproj" />
+    <ProjectReference Include="..\QwertzBridge.Infrastructure\QwertzBridge.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
