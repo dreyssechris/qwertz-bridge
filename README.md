@@ -11,8 +11,10 @@ angle brackets.
 
 > Deutsche Kurzanleitung: [README.de.md](README.de.md)
 
-![Tray menu screenshot placeholder](docs/screenshot-tray.png)
-<!-- TODO: screenshot or GIF of the tray menu and a remap in action -->
+<p align="center">
+  <img src="docs/demo.gif" width="720"
+       alt="Demo: AltGr plus comma, period and minus produce angle brackets and a pipe in an editor">
+</p>
 
 ## The problem
 
