@@ -28,5 +28,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Portable single-file publish via `publish.ps1` and GitHub Actions release
   workflow on tag push
 
-[Unreleased]: https://github.com/chrisdreysse/qwertz-bridge/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/chrisdreysse/qwertz-bridge/releases/tag/v1.0.0
+[Unreleased]: https://github.com/dreyssechris/qwertz-bridge/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/dreyssechris/qwertz-bridge/releases/tag/v1.0.0

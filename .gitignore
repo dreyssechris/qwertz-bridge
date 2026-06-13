@@ -1,6 +1,8 @@
-## Internal project briefing - never commit
+## Internal project briefing and assistant files - never commit
 PROJECT-BRIEF.md
 qwertz-project.md
+CLAUDE.md
+.claude/
 
 ## .NET / Visual Studio
 bin/
@@ -11,3 +13,6 @@ dist/
 *.suo
 TestResults/
 *.binlog
+
+## Other IDEs / tools
+.idea/

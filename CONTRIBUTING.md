@@ -1,4 +1,4 @@
-# Contributing to QWERTZ-Bridge
+﻿# Contributing to QWERTZ-Bridge
 
 Thanks for your interest. This project is intentionally small; please keep contributions
 in that spirit: as much as necessary, as little as possible.
@@ -10,7 +10,7 @@ in that spirit: as much as necessary, as little as possible.
 - Any editor (Visual Studio, Rider, VS Code with C# Dev Kit)
 
 ```powershell
-git clone https://github.com/chrisdreysse/qwertz-bridge.git
+git clone https://github.com/dreyssechris/qwertz-bridge.git
 cd qwertz-bridge
 dotnet build
 dotnet test

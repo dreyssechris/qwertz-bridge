@@ -5,8 +5,8 @@ A small portable Windows tray app for keyboards without the ISO 102 key, such as
 Ducky One 3 SF. It remaps free AltGr combos instead of forcing you to copy-paste
 angle brackets.
 
-[![CI](https://github.com/chrisdreysse/qwertz-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/chrisdreysse/qwertz-bridge/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/chrisdreysse/qwertz-bridge)](https://github.com/chrisdreysse/qwertz-bridge/releases/latest)
+[![CI](https://github.com/dreyssechris/qwertz-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/dreyssechris/qwertz-bridge/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/dreyssechris/qwertz-bridge)](https://github.com/dreyssechris/qwertz-bridge/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > Deutsche Kurzanleitung: [README.de.md](README.de.md)
@@ -47,7 +47,7 @@ combos that produce nothing on a stock German layout.
 
 ## Quickstart
 
-1. Download `QwertzBridge.exe` from the [latest release](https://github.com/chrisdreysse/qwertz-bridge/releases/latest)
+1. Download `QwertzBridge.exe` from the [latest release](https://github.com/dreyssechris/qwertz-bridge/releases/latest)
 2. Run it. A tray notification shows the active key combos
 3. Press `AltGr + ,` anywhere and you get `<`
 

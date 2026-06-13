@@ -16,7 +16,7 @@ Alle Standard-AltGr-Zeichen (`@ € { } [ ] \ ~`) funktionieren weiterhin.
 
 ## Schnellstart
 
-1. `QwertzBridge.exe` aus dem [neuesten Release](https://github.com/chrisdreysse/qwertz-bridge/releases/latest) herunterladen
+1. `QwertzBridge.exe` aus dem [neuesten Release](https://github.com/dreyssechris/qwertz-bridge/releases/latest) herunterladen
 2. Starten. Eine Tray-Benachrichtigung zeigt die aktiven Kombis
 3. Fertig. Optional im Tray-Menü *Start with Windows* aktivieren
 
