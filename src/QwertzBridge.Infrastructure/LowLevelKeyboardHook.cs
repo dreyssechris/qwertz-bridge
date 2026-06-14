@@ -4,30 +4,24 @@ using QwertzBridge.Core.Domain;
 
 namespace QwertzBridge.Infrastructure;
 
-/// <summary>
-/// Installs a global WH_KEYBOARD_LL hook and forwards every key event to <see cref="Handler"/>.
-/// Must be installed on a thread that runs a message loop (the WinForms UI thread).
-/// </summary>
+// Installs a global WH_KEYBOARD_LL hook and forwards every key event to Handler.
+// Must be installed on a thread with a running message loop (the WinForms UI thread).
 public sealed class LowLevelKeyboardHook : IDisposable
 {
     private readonly NativeMethods.LowLevelKeyboardProc _callback;
     private IntPtr _handle;
 
-    /// <summary>Creates the hook wrapper (call <see cref="Install"/> to activate it).</summary>
     public LowLevelKeyboardHook()
     {
-        // Kept in a field so the GC cannot collect the delegate while the hook is installed.
+        // Held in a field so the GC cannot collect the delegate while the hook is installed.
         _callback = HookCallback;
     }
 
-    /// <summary>Receives each key event; return true to suppress the original event.</summary>
+    // Receives each key event; return true to suppress the original event.
     public Func<KeyInput, bool>? Handler { get; set; }
 
-    /// <summary>True while the hook is installed.</summary>
     public bool IsInstalled => _handle != IntPtr.Zero;
 
-    /// <summary>Installs the global hook.</summary>
-    /// <exception cref="Win32Exception">If Windows rejects the hook installation.</exception>
     public void Install()
     {
         if (IsInstalled)
@@ -40,7 +34,6 @@ public sealed class LowLevelKeyboardHook : IDisposable
             throw new Win32Exception(Marshal.GetLastWin32Error(), "SetWindowsHookEx(WH_KEYBOARD_LL) failed.");
     }
 
-    /// <summary>Removes the hook. Safe to call repeatedly.</summary>
     public void Uninstall()
     {
         if (!IsInstalled)
@@ -50,7 +43,6 @@ public sealed class LowLevelKeyboardHook : IDisposable
         _handle = IntPtr.Zero;
     }
 
-    /// <inheritdoc />
     public void Dispose() => Uninstall();
 
     private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)

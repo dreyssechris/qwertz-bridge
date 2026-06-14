@@ -1,65 +1,36 @@
-using QwertzBridge.Core.Abstractions;
 using QwertzBridge.Core.Domain;
 
 namespace QwertzBridge.Core.Engine;
 
-/// <summary>
-/// The remap pipeline. Receives normalized keyboard events, tracks the AltGr state
-/// (Windows represents AltGr as LCtrl + RAlt) and decides per event whether it passes
-/// through or is replaced by configured output text.
-/// </summary>
-/// <remarks>
-/// <see cref="ProcessKey"/> is called from the low-level hook thread and must stay fast;
-/// it performs no I/O. Config updates from other threads are safe (immutable snapshot swap).
-/// </remarks>
+// The remap pipeline. Tracks the AltGr state (Windows reports AltGr as LCtrl + RAlt)
+// and decides per event whether it passes through or is replaced by output text.
+// ProcessKey runs on the hook thread and must stay fast: no I/O. The config reference
+// is swapped atomically, so hot reloads from other threads are safe.
 public sealed class RemapEngine
 {
-    private readonly IForegroundProcessProvider _foreground;
     private volatile BridgeConfig _config;
     private volatile bool _enabled = true;
-    private volatile string _activeProfileName;
 
     private bool _lCtrlDown;
     private bool _rAltDown;
     private readonly HashSet<int> _suppressedKeys = [];
 
-    /// <summary>Creates an engine with the given configuration.</summary>
-    /// <param name="config">Initial configuration.</param>
-    /// <param name="foreground">Provider for the foreground process name (profile matching).</param>
-    public RemapEngine(BridgeConfig config, IForegroundProcessProvider foreground)
-    {
-        _config = config;
-        _foreground = foreground;
-        _activeProfileName = ProfileResolver.Resolve(config, null).Name;
-    }
+    public RemapEngine(BridgeConfig config) => _config = config;
 
-    /// <summary>Master switch. When false, every event passes through.</summary>
     public bool Enabled
     {
         get => _enabled;
         set => _enabled = value;
     }
 
-    /// <summary>True while AltGr is held (both LCtrl and RAlt are down).</summary>
     public bool IsAltGrActive => _lCtrlDown && _rAltDown;
 
-    /// <summary>Name of the most recently resolved profile (for display in the tray menu).</summary>
-    public string ActiveProfileName => _activeProfileName;
+    public void UpdateConfig(BridgeConfig config) => _config = config;
 
-    /// <summary>Atomically swaps in a new configuration (e.g. after a hot reload).</summary>
-    /// <param name="config">The new configuration.</param>
-    public void UpdateConfig(BridgeConfig config)
-    {
-        _config = config;
-        _activeProfileName = ProfileResolver.Resolve(config, null).Name;
-    }
-
-    /// <summary>Processes one keyboard event and returns what to do with it.</summary>
-    /// <param name="input">The normalized keyboard event.</param>
     public KeyDecision ProcessKey(KeyInput input)
     {
-        // Our own SendInput output, including the modifier release/restore,
-        // must never be remapped or change the tracked modifier state.
+        // Our own SendInput output (including the modifier release/restore) must never
+        // be remapped or change the tracked modifier state.
         if (input.IsInjected)
             return KeyDecision.PassThrough;
 
@@ -67,8 +38,8 @@ public sealed class RemapEngine
 
         if (!input.IsKeyDown)
         {
-            // If we suppressed the key-down, swallow the key-up as well,
-            // even if AltGr was released or the engine disabled in between.
+            // If we suppressed the key-down, swallow the key-up too, even if AltGr was
+            // released or the engine disabled in between. No orphan key-ups.
             return _suppressedKeys.Remove(KeyId(input))
                 ? KeyDecision.SuppressOnly
                 : KeyDecision.PassThrough;
@@ -77,10 +48,7 @@ public sealed class RemapEngine
         if (!_enabled || IsModifier(input))
             return KeyDecision.PassThrough;
 
-        var profile = ProfileResolver.Resolve(_config, _foreground.GetForegroundProcessName());
-        _activeProfileName = profile.Name;
-
-        var rule = FindRule(profile, input, IsAltGrActive);
+        var rule = FindRule(_config, input, IsAltGrActive);
         if (rule is null)
             return KeyDecision.PassThrough;
 
@@ -96,9 +64,9 @@ public sealed class RemapEngine
             _rAltDown = input.IsKeyDown;
     }
 
-    private static RemapRule? FindRule(Profile profile, KeyInput input, bool altGrActive)
+    private static RemapRule? FindRule(BridgeConfig config, KeyInput input, bool altGrActive)
     {
-        foreach (var rule in profile.Rules)
+        foreach (var rule in config.Rules)
         {
             if (rule.AltGr == altGrActive
                 && rule.ScanCode == input.ScanCode

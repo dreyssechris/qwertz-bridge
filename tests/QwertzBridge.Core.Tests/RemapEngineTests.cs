@@ -1,5 +1,4 @@
 using QwertzBridge.Core.Domain;
-using QwertzBridge.Core.Engine;
 using static QwertzBridge.Core.Tests.TestHelpers;
 
 namespace QwertzBridge.Core.Tests;
@@ -56,7 +55,7 @@ public class RemapEngineTests
     [Fact]
     public void LCtrlPlusLAlt_DoesNotActivateAltGr()
     {
-        // Left Alt is non-extended; Ctrl+Alt (left) must not be mistaken for AltGr.
+        // Left Alt is non-extended; Ctrl + left Alt must not be mistaken for AltGr.
         var engine = CreateEngine();
         engine.ProcessKey(Down(ScanCodes.Ctrl));
         engine.ProcessKey(Down(ScanCodes.Alt, extended: false));
@@ -79,7 +78,7 @@ public class RemapEngineTests
     [Fact]
     public void AltGrPlusUnmappedKey_PassesThrough()
     {
-        // AltGr+Q produces '@' on German layouts and must stay untouched.
+        // AltGr + Q produces '@' on German layouts and must stay untouched.
         var engine = CreateEngine();
         engine.PressAltGr();
 
@@ -207,13 +206,7 @@ public class RemapEngineTests
 
         engine.UpdateConfig(new BridgeConfig
         {
-            Profiles =
-            [
-                new Profile
-                {
-                    Rules = [new RemapRule { ScanCode = ScanCodes.Comma, Output = "≤" }],
-                },
-            ],
+            Rules = [new RemapRule { ScanCode = ScanCodes.Comma, Output = "≤" }],
         });
 
         Assert.Equal("≤", engine.ProcessKey(Down(ScanCodes.Comma)).Output);
@@ -224,13 +217,7 @@ public class RemapEngineTests
     {
         var config = new BridgeConfig
         {
-            Profiles =
-            [
-                new Profile
-                {
-                    Rules = [new RemapRule { ScanCode = ScanCodes.Comma, AltGr = false, Output = ";" }],
-                },
-            ],
+            Rules = [new RemapRule { ScanCode = ScanCodes.Comma, AltGr = false, Output = ";" }],
         };
         var engine = CreateEngine(config);
 
@@ -240,34 +227,5 @@ public class RemapEngineTests
         engine.ProcessKey(Up(ScanCodes.Comma));
         engine.PressAltGr();
         Assert.Equal(KeyDecision.PassThrough, engine.ProcessKey(Down(ScanCodes.Comma)));
-    }
-
-    [Fact]
-    public void ProfileSwitch_UsesForegroundProcess()
-    {
-        var config = new BridgeConfig
-        {
-            Profiles =
-            [
-                new Profile
-                {
-                    Name = "VS",
-                    ProcessNames = ["devenv"],
-                    Rules = [new RemapRule { ScanCode = ScanCodes.Comma, Output = "X" }],
-                },
-                .. BridgeConfig.CreateDefault().Profiles,
-            ],
-        };
-        var foreground = new FakeForeground { Name = "devenv" };
-        var engine = new RemapEngine(config, foreground);
-        engine.PressAltGr();
-
-        Assert.Equal("X", engine.ProcessKey(Down(ScanCodes.Comma)).Output);
-        Assert.Equal("VS", engine.ActiveProfileName);
-        engine.ProcessKey(Up(ScanCodes.Comma));
-
-        foreground.Name = "notepad";
-        Assert.Equal("<", engine.ProcessKey(Down(ScanCodes.Comma)).Output);
-        Assert.Equal("Default", engine.ActiveProfileName);
     }
 }

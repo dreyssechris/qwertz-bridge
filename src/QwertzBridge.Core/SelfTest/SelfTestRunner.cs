@@ -1,22 +1,15 @@
-using QwertzBridge.Core.Abstractions;
 using QwertzBridge.Core.Config;
 using QwertzBridge.Core.Domain;
 using QwertzBridge.Core.Engine;
 
 namespace QwertzBridge.Core.SelfTest;
 
-/// <summary>Result of a self-test run.</summary>
-/// <param name="Success">True if every check passed.</param>
-/// <param name="Lines">One human-readable line per check.</param>
 public sealed record SelfTestResult(bool Success, IReadOnlyList<string> Lines);
 
-/// <summary>
-/// Drives the remap pipeline with simulated keyboard events (no hook, no SendInput)
-/// and verifies the expected decisions. Used by the <c>--selftest</c> CLI mode.
-/// </summary>
+// Drives the remap pipeline with simulated events (no hook, no SendInput) and checks
+// the expected decisions. Backs the --selftest CLI mode.
 public static class SelfTestRunner
 {
-    /// <summary>Runs all checks and returns the aggregated result.</summary>
     public static SelfTestResult Run()
     {
         var lines = new List<string>();
@@ -28,16 +21,14 @@ public static class SelfTestRunner
             lines.Add($"[{(passed ? "PASS" : "FAIL")}] {name} ({detail})");
         }
 
-        // --- Config pipeline ---------------------------------------------------
         var defaults = ConfigLoader.Parse(ConfigLoader.SerializeDefault());
-        Check("Default config round-trips", !defaults.UsedFallback && defaults.Config.Profiles.Count == 1,
+        Check("Default config round-trips", !defaults.UsedFallback && defaults.Config.Rules.Count == 3,
             "serialize + parse without fallback");
 
         var broken = ConfigLoader.Parse("{ this is not json");
-        Check("Broken config falls back to defaults", broken.UsedFallback && broken.Config.Profiles.Count == 1,
+        Check("Broken config falls back to defaults", broken.UsedFallback && broken.Config.Rules.Count == 3,
             $"error: {broken.Error}");
 
-        // --- Remap pipeline ----------------------------------------------------
         Check("AltGr + comma produces \"<\"", RemapWithAltGr(ScanCodes.Comma) == "<", "scan code 0x33");
         Check("AltGr + period produces \">\"", RemapWithAltGr(ScanCodes.Period) == ">", "scan code 0x34");
         Check("AltGr + slash key produces \"|\"", RemapWithAltGr(ScanCodes.Slash) == "|", "scan code 0x35, German layout '-'");
@@ -91,35 +82,10 @@ public static class SelfTestRunner
         Check("Key auto-repeat keeps remapping", first.Output == "<" && repeat.Output == "<",
             "holding the key repeats the output");
 
-        // --- Per-process profiles ----------------------------------------------
-        var config = new BridgeConfig
-        {
-            Profiles =
-            [
-                new Profile
-                {
-                    Name = "VS",
-                    ProcessNames = ["devenv"],
-                    Rules = [new RemapRule { ScanCode = ScanCodes.Comma, Output = "X" }],
-                },
-                .. BridgeConfig.CreateDefault().Profiles,
-            ],
-        };
-        var foreground = new FakeForeground { Name = "devenv" };
-        engine = new RemapEngine(config, foreground);
-        PressAltGr(engine);
-        var inVs = engine.ProcessKey(new KeyInput(ScanCodes.Comma, false, true));
-        engine.ProcessKey(new KeyInput(ScanCodes.Comma, false, false));
-        foreground.Name = "notepad";
-        var elsewhere = engine.ProcessKey(new KeyInput(ScanCodes.Comma, false, true));
-        Check("Per-process profile wins over default", inVs.Output == "X" && elsewhere.Output == "<",
-            "devenv → \"X\", notepad → \"<\"");
-
         return new SelfTestResult(success, lines);
     }
 
-    private static RemapEngine NewEngine() =>
-        new(BridgeConfig.CreateDefault(), new FakeForeground());
+    private static RemapEngine NewEngine() => new(BridgeConfig.CreateDefault());
 
     private static void PressAltGr(RemapEngine engine)
     {
@@ -132,12 +98,5 @@ public static class SelfTestRunner
         var engine = NewEngine();
         PressAltGr(engine);
         return engine.ProcessKey(new KeyInput(scanCode, false, true)).Output;
-    }
-
-    private sealed class FakeForeground : IForegroundProcessProvider
-    {
-        public string? Name { get; set; }
-
-        public string? GetForegroundProcessName() => Name;
     }
 }

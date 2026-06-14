@@ -10,15 +10,9 @@ public class ConfigLoaderTests
     {
         const string json = """
             {
-              "profiles": [
-                {
-                  "name": "Default",
-                  "processNames": [],
-                  "rules": [
-                    { "scanCode": "0x33", "altGr": true, "output": "<" },
-                    { "scanCode": 52, "altGr": true, "output": ">" }
-                  ]
-                }
+              "rules": [
+                { "scanCode": "0x33", "altGr": true, "output": "<" },
+                { "scanCode": 52, "altGr": true, "output": ">" }
               ]
             }
             """;
@@ -27,9 +21,8 @@ public class ConfigLoaderTests
 
         Assert.False(result.UsedFallback);
         Assert.Null(result.Error);
-        var rules = result.Config.Profiles[0].Rules;
-        Assert.Equal(0x33, rules[0].ScanCode);
-        Assert.Equal(0x34, rules[1].ScanCode);
+        Assert.Equal(0x33, result.Config.Rules[0].ScanCode);
+        Assert.Equal(0x34, result.Config.Rules[1].ScanCode);
     }
 
     [Fact]
@@ -38,10 +31,9 @@ public class ConfigLoaderTests
         var result = ConfigLoader.Parse(ConfigLoader.SerializeDefault());
 
         Assert.False(result.UsedFallback);
-        var rules = result.Config.Profiles[0].Rules;
-        Assert.Equal(3, rules.Count);
-        Assert.Equal(new[] { "<", ">", "|" }, rules.Select(r => r.Output));
-        Assert.All(rules, r => Assert.True(r.AltGr));
+        Assert.Equal(3, result.Config.Rules.Count);
+        Assert.Equal(new[] { "<", ">", "|" }, result.Config.Rules.Select(r => r.Output));
+        Assert.All(result.Config.Rules, r => Assert.True(r.AltGr));
     }
 
     [Theory]
@@ -51,8 +43,8 @@ public class ConfigLoaderTests
     [InlineData("42")]
     [InlineData("null")]
     [InlineData("{}")]
-    [InlineData("""{ "profiles": [] }""")]
-    [InlineData("""{ "profiles": null }""")]
+    [InlineData("""{ "rules": [] }""")]
+    [InlineData("""{ "rules": null }""")]
     public void InvalidInput_FallsBackToDefaults(string json)
     {
         var result = ConfigLoader.Parse(json);
@@ -60,16 +52,13 @@ public class ConfigLoaderTests
         Assert.True(result.UsedFallback);
         Assert.NotNull(result.Error);
         // The fallback config must be fully functional.
-        Assert.Single(result.Config.Profiles);
-        Assert.Equal(3, result.Config.Profiles[0].Rules.Count);
+        Assert.Equal(3, result.Config.Rules.Count);
     }
 
     [Fact]
     public void RuleWithoutOutput_FallsBack()
     {
-        const string json = """
-            { "profiles": [ { "rules": [ { "scanCode": "0x33", "output": "" } ] } ] }
-            """;
+        const string json = """{ "rules": [ { "scanCode": "0x33", "output": "" } ] }""";
 
         var result = ConfigLoader.Parse(json);
 
@@ -80,9 +69,7 @@ public class ConfigLoaderTests
     [Fact]
     public void RuleWithoutScanCode_FallsBack()
     {
-        const string json = """
-            { "profiles": [ { "rules": [ { "output": "<" } ] } ] }
-            """;
+        const string json = """{ "rules": [ { "output": "<" } ] }""";
 
         var result = ConfigLoader.Parse(json);
 
@@ -93,19 +80,7 @@ public class ConfigLoaderTests
     [Fact]
     public void InvalidScanCodeString_FallsBack()
     {
-        const string json = """
-            { "profiles": [ { "rules": [ { "scanCode": "0xZZ", "output": "<" } ] } ] }
-            """;
-
-        Assert.True(ConfigLoader.Parse(json).UsedFallback);
-    }
-
-    [Fact]
-    public void NullRules_FallsBack()
-    {
-        const string json = """
-            { "profiles": [ { "name": "X", "rules": null } ] }
-            """;
+        const string json = """{ "rules": [ { "scanCode": "0xZZ", "output": "<" } ] }""";
 
         Assert.True(ConfigLoader.Parse(json).UsedFallback);
     }
@@ -116,9 +91,7 @@ public class ConfigLoaderTests
         const string json = """
             {
               "somethingElse": true,
-              "profiles": [
-                { "rules": [ { "scanCode": "0x33", "output": "<", "color": "red" } ] }
-              ]
+              "rules": [ { "scanCode": "0x33", "output": "<", "color": "red" } ]
             }
             """;
 
@@ -131,9 +104,7 @@ public class ConfigLoaderTests
         const string json = """
             {
               // friendly for hand-edited files
-              "profiles": [
-                { "rules": [ { "scanCode": "0x33", "output": "<" }, ] },
-              ],
+              "rules": [ { "scanCode": "0x33", "output": "<" }, ],
             }
             """;
 
@@ -143,13 +114,11 @@ public class ConfigLoaderTests
     [Fact]
     public void CaseInsensitivePropertyNames_AreAccepted()
     {
-        const string json = """
-            { "Profiles": [ { "Rules": [ { "ScanCode": 51, "Output": "<" } ] } ] }
-            """;
+        const string json = """{ "Rules": [ { "ScanCode": 51, "Output": "<" } ] }""";
 
         var result = ConfigLoader.Parse(json);
 
         Assert.False(result.UsedFallback);
-        Assert.Equal(ScanCodes.Comma, result.Config.Profiles[0].Rules[0].ScanCode);
+        Assert.Equal(ScanCodes.Comma, result.Config.Rules[0].ScanCode);
     }
 }

@@ -26,6 +26,5 @@ Weitere Punkte:
 - Tray-Menü: Ein/Aus (auch per Doppelklick), Konfiguration öffnen, Autostart, Beenden
 - Hot-Reload: Änderungen an der JSON-Datei wirken sofort. Fehlerhafte Configs fallen
   mit Hinweis auf die Defaults zurück
-- Profile pro Anwendung über `processNames` in der Konfiguration
 
 Vollständige Dokumentation (Konfiguration, FAQ, Build) im englischen [README.md](README.md).

@@ -26,7 +26,7 @@ internal static class Program
 
     private static int RunSelfTest()
     {
-        // This is a WinExe; attach to the parent console so output lands in the invoking terminal.
+        // This is a WinExe; attach to the parent console so output lands in the terminal.
         AttachConsole(AttachParentProcess);
 
         var result = SelfTestRunner.Run();

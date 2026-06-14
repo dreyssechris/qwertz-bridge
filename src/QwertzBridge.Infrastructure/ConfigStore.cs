@@ -2,11 +2,8 @@ using QwertzBridge.Core.Config;
 
 namespace QwertzBridge.Infrastructure;
 
-/// <summary>
-/// Owns the JSON config file next to the executable (portable deployment): creates it
-/// with defaults on first run, loads it, and raises <see cref="ConfigReloaded"/> when
-/// the file changes on disk (hot reload, debounced).
-/// </summary>
+// Owns the JSON config file next to the executable: creates it with defaults on first
+// run, loads it, and raises ConfigReloaded (debounced) when the file changes on disk.
 public sealed class ConfigStore : IDisposable
 {
     private const string FileName = "qwertzbridge.json";
@@ -15,7 +12,6 @@ public sealed class ConfigStore : IDisposable
     private readonly FileSystemWatcher _watcher;
     private readonly System.Threading.Timer _debounce;
 
-    /// <summary>Creates the store; call <see cref="LoadOrCreate"/> then <see cref="StartWatching"/>.</summary>
     public ConfigStore()
     {
         ConfigPath = Path.Combine(AppContext.BaseDirectory, FileName);
@@ -29,16 +25,13 @@ public sealed class ConfigStore : IDisposable
         _watcher.Renamed += OnFileEvent;
     }
 
-    /// <summary>Full path of the config file (next to the EXE).</summary>
     public string ConfigPath { get; }
 
-    /// <summary>True if <see cref="LoadOrCreate"/> created the file (first run).</summary>
+    // True if LoadOrCreate created the file (first run).
     public bool CreatedDefaultFile { get; private set; }
 
-    /// <summary>Raised after a hot reload, on a background thread.</summary>
     public event Action<ConfigLoadResult>? ConfigReloaded;
 
-    /// <summary>Loads the config file, creating it with defaults if it does not exist.</summary>
     public ConfigLoadResult LoadOrCreate()
     {
         if (!File.Exists(ConfigPath))
@@ -59,10 +52,8 @@ public sealed class ConfigStore : IDisposable
         return ConfigLoader.Parse(ReadFileWithRetry());
     }
 
-    /// <summary>Starts watching the config file for changes.</summary>
     public void StartWatching() => _watcher.EnableRaisingEvents = true;
 
-    /// <inheritdoc />
     public void Dispose()
     {
         _watcher.Dispose();
@@ -89,7 +80,7 @@ public sealed class ConfigStore : IDisposable
 
     private string ReadFileWithRetry()
     {
-        // Editors often hold a short-lived lock while saving; retry briefly.
+        // Editors often hold a brief lock while saving; retry a few times.
         for (var attempt = 0; ; attempt++)
         {
             try

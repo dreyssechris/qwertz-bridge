@@ -1,22 +1,14 @@
-using QwertzBridge.Core.Abstractions;
 using QwertzBridge.Core.Domain;
 using QwertzBridge.Core.Engine;
 
 namespace QwertzBridge.Core.Tests;
 
-internal sealed class FakeForeground : IForegroundProcessProvider
-{
-    public string? Name { get; set; }
-
-    public string? GetForegroundProcessName() => Name;
-}
-
 internal static class TestHelpers
 {
-    public static RemapEngine CreateEngine(BridgeConfig? config = null, string? processName = null) =>
-        new(config ?? BridgeConfig.CreateDefault(), new FakeForeground { Name = processName });
+    public static RemapEngine CreateEngine(BridgeConfig? config = null) =>
+        new(config ?? BridgeConfig.CreateDefault());
 
-    /// <summary>Simulates AltGr going down the way Windows reports it: LCtrl first, then extended RAlt.</summary>
+    // Simulates AltGr going down the way Windows reports it: LCtrl first, then extended RAlt.
     public static void PressAltGr(this RemapEngine engine)
     {
         engine.ProcessKey(Down(ScanCodes.Ctrl));

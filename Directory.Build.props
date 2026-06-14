@@ -4,5 +4,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <Version>1.0.1</Version>
+    <Authors>Chris Dreysse</Authors>
+    <Company>Chris Dreysse</Company>
+    <Product>QWERTZ-Bridge</Product>
+    <Copyright>Copyright (c) 2026 Chris Dreysse</Copyright>
+    <Description>Type &lt; &gt; and | on ANSI (US) keyboards using the German QWERTZ layout.</Description>
+    <RepositoryUrl>https://github.com/dreyssechris/qwertz-bridge</RepositoryUrl>
   </PropertyGroup>
 </Project>

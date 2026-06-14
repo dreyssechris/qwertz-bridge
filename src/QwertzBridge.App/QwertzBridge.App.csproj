@@ -6,7 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>QwertzBridge</AssemblyName>
     <RootNamespace>QwertzBridge.App</RootNamespace>
-    <Version>1.0.0</Version>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
     <NoWarn>$(NoWarn);SYSLIB1054</NoWarn>
   </PropertyGroup>
 

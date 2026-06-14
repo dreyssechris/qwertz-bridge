@@ -11,11 +11,6 @@ angle brackets.
 
 > Deutsche Kurzanleitung: [README.de.md](README.de.md)
 
-<p align="center">
-  <img src="docs/demo.gif" width="720"
-       alt="Demo: AltGr plus comma, period and minus produce angle brackets and a pipe in an editor">
-</p>
-
 ## The problem
 
 Physical ANSI (US) keyboards lack the ISO 102 key between left Shift and `Y`/`Z`.
@@ -40,7 +35,6 @@ combos that produce nothing on a stock German layout.
 
 - Zero config: start the EXE, the default remaps work immediately
 - Portable: one self-contained EXE, config lives next to it, no installer, no admin rights
-- Per-application profiles via process name
 - Hot reload: edit the JSON config, changes apply instantly. Invalid configs fall back
   to the defaults with a notification, the app never crashes over a typo
 - Tray control: toggle on/off (the icon shows the state), open config, autostart, exit
@@ -61,51 +55,21 @@ On first run, `qwertzbridge.json` is created next to the EXE:
 
 ```json
 {
-  "profiles": [
-    {
-      "name": "Default",
-      "processNames": [],
-      "rules": [
-        { "scanCode": "0x33", "altGr": true, "output": "<" },
-        { "scanCode": "0x34", "altGr": true, "output": ">" },
-        { "scanCode": "0x35", "altGr": true, "output": "|" }
-      ]
-    }
+  "rules": [
+    { "scanCode": "0x33", "altGr": true, "output": "<" },
+    { "scanCode": "0x34", "altGr": true, "output": ">" },
+    { "scanCode": "0x35", "altGr": true, "output": "|" }
   ]
 }
 ```
 
-- `processNames` limits a profile to specific applications (`"devenv"`, `"code.exe"`).
-  An empty list makes it the catch-all profile. The first matching profile wins.
-- `scanCode` identifies the physical key independent of the Windows layout, as hex
-  string (`"0x33"`) or decimal number (`51`). Comments and trailing commas are allowed.
+- `scanCode` identifies the physical key independent of the Windows layout, as a hex
+  string (`"0x33"`) or a decimal number (`51`). Comments and trailing commas are allowed.
 - `altGr: true` (default) fires only while AltGr is held, `false` remaps the plain key.
 - `output` is any text, including Unicode and multiple characters.
 
-Example with a per-application profile:
-
-```json
-{
-  "profiles": [
-    {
-      "name": "Terminal",
-      "processNames": ["WindowsTerminal"],
-      "rules": [
-        { "scanCode": "0x35", "output": " | " }
-      ]
-    },
-    {
-      "name": "Default",
-      "processNames": [],
-      "rules": [
-        { "scanCode": "0x33", "output": "<" },
-        { "scanCode": "0x34", "output": ">" },
-        { "scanCode": "0x35", "output": "|" }
-      ]
-    }
-  ]
-}
-```
+Invalid configs never crash the app: it falls back to the built-in defaults and shows a
+tray notification. Edits to the file are picked up live.
 
 Useful scan codes:
 
@@ -128,8 +92,8 @@ Both are excellent tools. This app exists because neither fits this exact niche 
 - **AutoHotkey** can do it, but you carry a scripting runtime and a script per machine,
   and the AltGr edge cases (synthetic LCtrl, modifier handling around sends) are easy
   to get subtly wrong.
-- **QWERTZ-Bridge** is one portable EXE with tested AltGr semantics, per-app profiles
-  and a config file you can copy between machines.
+- **QWERTZ-Bridge** is one portable EXE with tested AltGr semantics and a config file
+  you can copy between machines.
 
 ## FAQ
 

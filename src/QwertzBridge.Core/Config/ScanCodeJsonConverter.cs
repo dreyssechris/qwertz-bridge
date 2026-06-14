@@ -4,13 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace QwertzBridge.Core.Config;
 
-/// <summary>
-/// Reads scan codes either as JSON numbers (51) or as hex strings ("0x33");
-/// writes them as hex strings for readability.
-/// </summary>
+// Reads scan codes as numbers (51) or hex strings ("0x33"); writes them as hex.
 public sealed class ScanCodeJsonConverter : JsonConverter<ushort>
 {
-    /// <inheritdoc />
     public override ushort Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Number)
@@ -29,10 +25,9 @@ public sealed class ScanCodeJsonConverter : JsonConverter<ushort>
                 return dec;
         }
 
-        throw new JsonException($"Invalid scan code: expected a number or hex string like \"0x33\".");
+        throw new JsonException("Invalid scan code: expected a number or a hex string like \"0x33\".");
     }
 
-    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, ushort value, JsonSerializerOptions options) =>
         writer.WriteStringValue($"0x{value:X2}");
 }

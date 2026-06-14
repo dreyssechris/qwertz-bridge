@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace QwertzBridge.Infrastructure;
 
-/// <summary>P/Invoke declarations for the keyboard hook, SendInput and foreground window queries.</summary>
+// P/Invoke declarations for the keyboard hook and SendInput.
 internal static class NativeMethods
 {
     internal const int WH_KEYBOARD_LL = 13;
@@ -53,7 +53,7 @@ internal static class NativeMethods
         public IntPtr dwExtraInfo;
     }
 
-    // The union must include MOUSEINPUT so Marshal.SizeOf<INPUT>() yields the size Windows expects.
+    // The union must include MOUSEINPUT so Marshal.SizeOf<INPUT>() matches what Windows expects.
     [StructLayout(LayoutKind.Explicit)]
     internal struct InputUnion
     {
@@ -83,10 +83,4 @@ internal static class NativeMethods
 
     [DllImport("user32.dll", SetLastError = true)]
     internal static extern uint SendInput(uint cInputs, INPUT[] pInputs, int cbSize);
-
-    [DllImport("user32.dll")]
-    internal static extern IntPtr GetForegroundWindow();
-
-    [DllImport("user32.dll")]
-    internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 }
