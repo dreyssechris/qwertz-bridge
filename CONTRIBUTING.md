@@ -3,12 +3,6 @@
 Thanks for your interest. This project is intentionally small; please keep contributions
 in that spirit: as much as necessary, as little as possible.
 
-## Dev setup
-
-- Windows 10/11
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or newer
-- Any editor (Visual Studio, Rider, VS Code with C# Dev Kit)
-
 ```powershell
 git clone https://github.com/dreyssechris/qwertz-bridge.git
 cd qwertz-bridge
